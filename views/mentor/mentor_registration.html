@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Registration - {{.Website}}</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .registration-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-group input, 
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            background: rgba(26, 0, 51, 0.6);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+        }
+
+        .form-group input::placeholder, 
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .email-domain {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        h1 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: var(--neon-cyan);
+            color: var(--deep-purple);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border: 1px solid #ff4444;
+        }
+
+        .specialties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .specialty-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .form-footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: var(--deep-purple);
+            text-align: center;
+            padding: 2rem;
+            border-top: 2px solid var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/jobs">Jobs</a>
+            <a href="/mentor/register">Become a Mentor</a>
+            <a href="/mentee/register">Find a Mentor</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="registration-form">
+            <h1>Become a Mentor</h1>
+            <form id="mentorForm" action="/register/mentor" method="POST" onsubmit="return validateEmail()">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required
+                           placeholder="your@underground-ops.dev">
+                    <p class="email-domain">*Must be an @underground-ops.dev email address</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required
+                               minlength="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword"
+                               required minlength="8">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Areas of Expertise</label>
+                    <div class="specialties-grid">
+                        {{range .Specialties}}
+                        <div class="specialty-checkbox">
+                            <input type="checkbox" id="{{.}}" name="specialties" value="{{.}}">
+                            <label for="{{.}}">{{.}}</label>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="experience">Years of Experience</label>
+                        <input type="number" id="experience" name="experience" required
+                               min="3" max="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rate">Hourly Rate (USD)</label>
+                        <input type="number" id="rate" name="rate" required
+                               min="50" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Professional Bio</label>
+                    <textarea id="bio" name="bio" rows="4" required
+                              placeholder="Share your professional background and teaching experience..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="availability">Weekly Availability (hours)</label>
+                    <select id="availability" name="availability" required>
+                        <option value="">Select availability</option>
+                        <option value="5">5 hours/week</option>
+                        <option value="10">10 hours/week</option>
+                        <option value="15">15 hours/week</option>
+                        <option value="20">20+ hours/week</option>
+                    </select>
+                </div>
+
+                {{if .Error}}
+                <div class="error-message">
+                    {{.Error}}
+                </div>
+                {{end}}
+
+                <button type="submit" class="submit-btn">Apply to be a Mentor</button>
+
+                <div class="form-footer">
+                    <p>Already registered? <a href="/login">Log in</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 {{.Website}}. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('mentorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate email
+            const email = document.getElementById('email').value;
+            if (!email.endsWith('@underground-ops.dev')) {
+                alert('Please use your @underground-ops.dev email address.');
+                return;
+            }
+    
+            // Validate passwords match
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            if (password !== confirm) {
+                alert('Passwords do not match!');
+                return;
+            }
+    
+            // Get selected specialties
+            const specialtiesChecked = Array.from(document.querySelectorAll('input[name="specialties"]:checked'))
+                .map(cb => cb.value)
+                .join(', ');
+    
+            // Construct the request body
+            const formData = {
+                username: email.split('@')[0], // Use email prefix as username
+                email: email,
+                password: password,
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                bio: document.getElementById('bio').value,
+                skills: specialtiesChecked,
+                rate: parseFloat(document.getElementById('rate').value),
+                experience: document.getElementById('experience').value,
+                specialties: specialtiesChecked
+            };
+    
+            try {
+                const response = await fetch('/register/mentor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+    
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(errorData || 'Registration failed');
+                }
+    
+                // Registration successful
+                window.location.href = '/login?registered=true';
+            } catch (error) {
+                // Display error in the error message div
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = error.message;
+                
+                // Remove any existing error message
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Insert error before the submit button
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.parentNode.insertBefore(errorDiv, submitBtn);
+            }
+        });
+    
+        // Add client-side validation for rate
+        document.getElementById('rate').addEventListener('change', function(e) {
+            const rate = parseFloat(e.target.value);
+            if (rate < 50) {
+                alert('Minimum hourly rate is $50 USD');
+                e.target.value = 50;
+            }
+        });
+    
+        // Add client-side validation for experience
+        document.getElementById('experience').addEventListener('change', function(e) {
+            const years = parseInt(e.target.value);
+            if (years < 3) {
+                alert('Minimum 3 years of experience required');
+                e.target.value = 3;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Dashboard - {{.Website}}</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 400px) 1fr; /* Limit form width */
+    gap: 2rem;
+    align-items: start; /* Align items to top */
+}
+
+.create-program {
+    position: sticky;
+    top: 2rem;
+    background: var(--deep-purple);
+    border: 1px solid var(--neon-cyan);
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: fit-content;
+}
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-group input, 
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            background: rgba(26, 0, 51, 0.6);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .program-list {
+    width: 100%;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+        .program-card {
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .program-card h3 {
+            color: var(--neon-cyan);
+            margin: 0 0 1rem 0;
+        }
+
+        .program-meta {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 1rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid red;
+            color: red;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: var(--deep-purple);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 2px solid var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/mentor/dashboard">Dashboard</a>
+            <a href="/mentor/programs">Programs</a>
+            <a href="/mentor/requests">Requests</a>
+            <a href="/profile">Profile</a>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Welcome{{if .Profile}}, {{.Profile.FirstName}}{{end}}!</h1>
+
+        <div class="dashboard-grid">
+            <aside class="create-program">
+                <h2>Create Program</h2>
+                <form id="programForm">
+                    <div class="form-group">
+                        <label for="title">Program Title</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price (USD)</label>
+                        <input type="number" id="price" name="price" min="0" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration" name="duration" placeholder="e.g., 8 weeks" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxMentees">Maximum Mentees</label>
+                        <input type="number" id="maxMentees" name="max_mentees" min="1" value="1" required>
+                    </div>
+
+                    <button type="submit" class="btn">Create Program</button>
+                </form>
+            </aside>
+
+            <section class="program-list">
+                <h2>Your Programs</h2>
+                <div id="programsList">
+                    {{if .Programs}}
+                        {{range .Programs}}
+                        <div class="program-card" data-program-id="{{.ID}}">
+                            <h3>{{.Title}}</h3>
+                            <p>{{.Description}}</p>
+                            <div class="program-meta">
+                                <span>Duration: {{.Duration}}</span>
+                                <span>Price: ${{.Price}}</span>
+                            </div>
+                            <div class="program-actions">
+                                <button class="btn" onclick="editProgram(this)" type="button">Edit</button>
+                            </div>
+                        </div>
+                        {{end}}
+                    {{else}}
+                        <div class="program-card">
+                            <p>You haven't created any programs yet.</p>
+                            <p>Use the form on the left to create your first program!</p>
+                        </div>
+                    {{end}}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 {{.Website}}. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('programForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Clear any existing error messages
+            const existingErrors = document.querySelectorAll('.error-message, .success-message');
+            existingErrors.forEach(el => el.remove());
+            
+            const formData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                price: parseFloat(document.getElementById('price').value),
+                duration: document.getElementById('duration').value,
+                max_mentees: parseInt(document.getElementById('maxMentees').value)
+            };
+
+            try {
+                const response = await fetch('/mentor/programs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: 'include' // Include cookies
+                });
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    // If response is not JSON
+                    data = { error: 'Server error occurred' };
+                }
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to create program');
+                }
+
+                // Success case
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.textContent = 'Program created successfully!';
+                e.target.insertBefore(successDiv, e.target.firstChild);
+
+                // Clear form
+                e.target.reset();
+
+                // Reload programs list after a short delay
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+
+            } catch (error) {
+                console.error('Program creation error:', error);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = error.message || 'Error creating program';
+                e.target.insertBefore(errorDiv, e.target.firstChild);
+            }
+        });
+
+        function editProgram(button) {
+            const programCard = button.closest('.program-card');
+            const programId = programCard.dataset.programId;
+            window.location.href = `/mentor/programs/${programId}/edit`;
+        }
+    </script>
+</body>
+</html>

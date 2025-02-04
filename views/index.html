@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Website}} - Welcome</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(rgba(26, 0, 51, 0.9), rgba(26, 0, 51, 0.9));
+        }
+
+        .hero h1 {
+            color: var(--neon-cyan);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        .featured-mentors {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .mentor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .mentor-card {
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .mentor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .mentor-card h3 {
+            color: var(--neon-cyan);
+            margin: 0 0 1rem 0;
+        }
+
+        footer {
+            background: var(--deep-purple);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 2px solid var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/jobs">Jobs</a>
+            <a href="/mentor/register">Become a Mentor</a>
+            <a href="/mentee/register">Find a Mentor</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Welcome to {{.Website}}</h1>
+            <p>Connect with expert mentors in tech and advance your career</p>
+            <div class="cta-buttons">
+                <a href="/mentee/register" class="btn">Find a Mentor</a>
+                <a href="/mentor/register" class="btn">Become a Mentor</a>
+            </div>
+        </section>
+
+        <section class="featured-mentors">
+            <h2>Featured Mentors</h2>
+            <div class="mentor-grid">
+                {{range .FeaturedMentors}}
+                <div class="mentor-card">
+                    <h3>{{.FirstName}} {{.LastName}}</h3>
+                    <p>{{.Title}}</p>
+                    <p>Skills: {{.Skills}}</p>
+                    <p>Rate: ${{.Rate}}/hour</p>
+                    <a href="/mentors/{{.ID}}" class="btn">View Profile</a>
+                </div>
+                {{end}}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Contact: {{.Email}}</p>
+        <p>&copy; 2024 {{.Website}}. All rights reserved.</p>
+    </footer>
+</body>
+</html>

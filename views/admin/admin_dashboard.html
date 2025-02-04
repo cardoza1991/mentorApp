@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - {{.Website}}</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .stats-card {
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .stats-card h3 {
+            color: var(--neon-cyan);
+            margin-top: 0;
+        }
+
+        .approval-list {
+            margin-top: 2rem;
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .user-item {
+            background: rgba(26, 0, 51, 0.6);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-item h3 {
+            color: var(--neon-cyan);
+            margin-top: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        .approve-btn:hover {
+            background: #00ff00;
+            border-color: #00ff00;
+        }
+
+        .reject-btn:hover {
+            background: #ff4444;
+            border-color: #ff4444;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 4px;
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            color: var(--text);
+            z-index: 1000;
+            display: none;
+        }
+
+        .alert.success {
+            border-color: #00ff00;
+        }
+
+        .alert.error {
+            border-color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/admin" class="btn">Dashboard</a>
+            <a href="/admin/users" class="btn">Users</a>
+            <a href="/admin/profiles" class="btn">Profiles</a>
+            <a href="/admin/jobs" class="btn">Jobs</a>
+            <a href="/" class="btn">Main Site</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Admin Dashboard</h1>
+
+        <div class="dashboard-grid">
+            <div class="stats-card">
+                <h3>Quick Stats</h3>
+                <p>Total Users: {{.Stats.TotalUsers}}</p>
+                <p>Pending Approvals: {{.Stats.PendingApprovals}}</p>
+                <p>Active Mentors: {{.Stats.ActiveMentors}}</p>
+                <p>Active Mentees: {{.Stats.ActiveMentees}}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Recent Activity</h3>
+                <p>New Users Today: {{.Stats.NewUsersToday}}</p>
+                <p>Active Sessions: {{.Stats.ActiveSessions}}</p>
+                <p>Open Jobs: {{.Stats.OpenJobs}}</p>
+            </div>
+        </div>
+
+        <div class="approval-list">
+            <h2>Pending Mentor Approvals</h2>
+            {{if .PendingProfiles}}
+                {{range .PendingProfiles}}
+                <div class="user-item" data-user-id="{{.id}}">
+                    <h3>{{.firstName}} {{.lastName}}</h3>
+                    <p>Email: {{.email}}</p>
+                    <div class="action-buttons">
+                        <!-- Change the quotes around the template variables -->
+                        <button class="btn approve-btn" onclick="handleApproval('{{.id}}', true)">Approve</button>
+                        <button class="btn reject-btn" onclick="handleApproval('{{.id}}', false)">Reject</button>
+                    </div>
+                </div>
+                {{end}}
+            {{else}}
+                <p>No pending mentor approvals</p>
+            {{end}}
+        </div>
+    </main>
+
+    <div id="alert" class="alert"></div>
+
+    <script>
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        async function handleApproval(userId, approved) {
+            try {
+                const response = await fetch(`/admin/mentors/${userId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ approved: approved })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update mentor status');
+                }
+
+                // Remove the mentor card from the dashboard
+                const mentorCard = document.querySelector(`.user-item[data-user-id="${userId}"]`);
+                if (mentorCard) {
+                    mentorCard.remove();
+                }
+
+                // Show success message
+                showAlert(
+                    approved ? 'Mentor approved successfully!' : 'Mentor rejected successfully!',
+                    'success'
+                );
+
+                // Update the pending approvals count
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Failed to process mentor approval', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

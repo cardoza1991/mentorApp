@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - {{.Website}}</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 400px;
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            background: rgba(26, 0, 51, 0.6);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: var(--neon-cyan);
+            color: var(--deep-purple);
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .form-footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: var(--deep-purple);
+            text-align: center;
+            padding: 2rem;
+            border-top: 2px solid var(--neon-cyan);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/jobs">Jobs</a>
+            <a href="/mentor/register">Become a Mentor</a>
+            <a href="/mentee/register">Find a Mentor</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-form">
+            <h1>Login</h1>
+            
+            {{if .Registered}}
+            <div class="success-message">
+                Registration successful! Please log in with your credentials.
+            </div>
+            {{end}}
+
+            {{if .Error}}
+            <div class="error-message">
+                {{.Error}}
+            </div>
+            {{end}}
+
+            <form id="loginForm" action="/auth/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Login</button>
+
+                <div class="form-footer">
+                    <p>Need an account? <a href="/mentor/register">Register as Mentor</a> or <a href="/mentee/register">Register as Mentee</a></p>
+                    <p><a href="/forgot-password">Forgot Password?</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 {{.Website}}. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+    
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+    
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(errorData || 'Login failed');
+                }
+    
+                // Login successful - check user role and redirect
+                const data = await response.json();
+                console.log('Login response:', data);  // Debug log
+    
+                if (data.is_admin) {
+                    console.log('Redirecting to admin dashboard');  // Debug log
+                    window.location.href = '/admin/dashboard';
+                } else if (data.is_mentor) {
+                    console.log('Redirecting to mentor dashboard');  // Debug log
+                    window.location.href = '/mentor/dashboard';
+                } else {
+                    console.log('Redirecting to mentee dashboard');  // Debug log
+                    window.location.href = '/mentee/dashboard';
+                }
+            } catch (error) {
+                console.error('Login error:', error);  // Debug log
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = error.message;
+                
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                const form = document.getElementById('loginForm');
+                form.insertBefore(errorDiv, form.firstChild);
+            }
+        });
+    </script>
+</html>

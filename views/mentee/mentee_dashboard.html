@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentee Dashboard - {{.Website}}</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .program-card {
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .program-card h3 {
+            color: var(--neon-cyan);
+            margin: 0 0 1rem 0;
+        }
+
+        .program-details {
+            margin: 1rem 0;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .program-details p {
+            margin: 0.5rem 0;
+        }
+
+        .program-meta {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        footer {
+            background: var(--deep-purple);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 2px solid var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/mentee/dashboard">Dashboard</a>
+            <a href="/mentee/programs">Programs</a>
+            <a href="/jobs">Jobs</a>
+            <a href="/profile">Profile</a>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Welcome, {{.Profile.FirstName}}!</h1>
+
+        <h2>Available Mentorship Programs</h2>
+        <div class="program-grid">
+            {{if .Programs}}
+                {{range .Programs}}
+                <div class="program-card">
+                    <h3>{{.Title}}</h3>
+                    <div class="program-meta">
+                        <span>{{.Duration}}</span>
+                        <span>${{.Price}}</span>
+                    </div>
+                    <div class="program-details">
+                        <p>{{.Description}}</p>
+                    </div>
+                    <form action="/mentee/enroll/{{.Id}}" method="POST">
+                        <button type="submit" class="btn">Enroll Now</button>
+                    </form>
+                </div>
+                {{end}}
+            {{else}}
+                <div class="program-card">
+                    <p>No programs available at the moment.</p>
+                    <p>Check back later or browse our <a href="/mentors">mentor listings</a>.</p>
+                </div>
+            {{end}}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 {{.Website}}. All rights reserved.</p>
+    </footer>
+</body>
+</html>

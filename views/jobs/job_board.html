@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Board - {{.Website}}</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --deep-purple: #1a0033;
+            --purple: #4a0082;
+            --background: #13001f;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--deep-purple);
+            padding: 1rem;
+            border-bottom: 2px solid var(--neon-cyan);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .job-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--deep-purple);
+            border-radius: 8px;
+            border: 1px solid var(--neon-cyan);
+        }
+
+        .job-filters input,
+        .job-filters select {
+            padding: 0.5rem;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            background: var(--background);
+            color: var(--text);
+            flex: 1;
+        }
+
+        .job-filters input:focus,
+        .job-filters select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+        }
+
+        .job-card {
+            background: var(--deep-purple);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .job-card h3 {
+            color: var(--neon-cyan);
+            margin: 0 0 1rem 0;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .job-description {
+            margin-bottom: 1rem;
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--neon-cyan);
+            color: var(--deep-purple);
+        }
+
+        footer {
+            background: var(--deep-purple);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 2px solid var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/jobs">Jobs</a>
+            <a href="/mentor/register">Become a Mentor</a>
+            <a href="/mentee/register">Find a Mentor</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Job Board</h1>
+
+        <div class="job-filters">
+            <input type="text" placeholder="Search jobs...">
+            <select>
+                <option value="">All Locations</option>
+                <option value="remote">Remote</option>
+                <option value="onsite">Onsite</option>
+                <option value="hybrid">Hybrid</option>
+            </select>
+        </div>
+
+        <div class="job-list">
+            {{if .Jobs}}
+                {{range .Jobs}}
+                <div class="job-card">
+                    <h3>{{.Title}}</h3>
+                    <div class="job-meta">
+                        <span>{{.Company}}</span>
+                        {{if .Location}}
+                        <span>{{.Location}}</span>
+                        {{end}}
+                        {{if .SalaryRange}}
+                        <span>{{.SalaryRange}}</span>
+                        {{end}}
+                    </div>
+                    <div class="job-description">
+                        <p>{{.Description}}</p>
+                    </div>
+                    <div class="job-footer">
+                        <span>Posted on: {{.CreatedAt.Format "Jan 2, 2006"}}</span>
+                        <a href="/jobs/{{.ID}}/apply" class="btn">Apply Now</a>
+                    </div>
+                </div>
+                {{end}}
+            {{else}}
+                <div class="job-card">
+                    <p>No jobs available at the moment.</p>
+                    <p>Check back later or <a href="/contact">contact us</a> to post a job.</p>
+                </div>
+            {{end}}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 {{.Website}}. All rights reserved.</p>
+    </footer>
+</body>
+</html>
